@@ -50,12 +50,21 @@ void primaryMirrorControl_ISR()
     interrupts();
 }
 
+/// @brief Returns a reference to the singleton instantiation of this class
+///
+/// The first time this is called, the static object is created and calls
+/// the device's constructor. Because the static keyword is used the object
+/// remains in memory, and every time the function is called after that a 
+/// reference to that object is returned.
+///
+/// @return A reference to the singleton instantiation of this class
 DeviceController &DeviceController::getDeviceController()
 {
     static DeviceController instance;
     return instance;
 }
 
+/// @brief Any code which leverages hardware on the Teensy (such as timers, interrupts, etc)
 void DeviceController::hardware_setup()
 {
     // Initialize Timer
@@ -107,6 +116,7 @@ void DeviceController::setupPersistentFields()
     cli->addPersistentField(DeviceName, "[BG Loop Counter]", BG_LOOP_INFO_ROW);
 }
 
+/// @brief Function to be called when a callback is received over TCP.
 void DeviceController::doSomethingForACallback()
 {
     static uint64_t callback_ct = 0;

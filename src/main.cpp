@@ -50,7 +50,7 @@ DeviceController *pDC;
 /// The LFAST Comms library (of which TcpCommsService is a component)
 /// works by associating JSON key-value pairs to function pointers.
 /// When a key is received, the library checks to see if a function 
-/// pointers has been registered for it. If it has, it calls that function
+/// pointer has been registered for it. If it has, it calls that function
 /// and passes the value from the key-value pair as an argument.
 /// This template defines and registers two such callbacks in this file.
 ///////////////////////////////////////////////////////////////////////////
@@ -68,7 +68,7 @@ void setup()
   // messages in an organized way. 
   cli = new TerminalInterface(DEVICE_CLI_LABEL, &(TEST_SERIAL), TEST_SERIAL_BAUD);
   commsService = new LFAST::TcpCommsService(myIP);
-  // Any classes derived from LFAST_Device (such as TcpCommsService can print
+  // Any classes derived from LFAST_Device (such as TcpCommsService) can print
   // data out to the same terminal interface, they don't all need their own.
   // They just have to be given a pointer to the terminal object:
   commsService->connectTerminalInterface(cli, "Comms");
