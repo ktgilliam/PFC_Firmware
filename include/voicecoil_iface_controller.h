@@ -32,15 +32,15 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "teensy41_device.h"
 
 /// @brief  Use an enum to make it easy to switch the order that persistent fields are printed out.
-enum DEVICE_CLI_ROWS
+enum VC_CTRL_CLI_ROWS
 {
-    BLANK_ROW_0,
-    HEX_INFO_ROW,
-    BLANK_ROW_1,
-    FLOAT_INFO_ROW,
-    DEC_INFO,
-    CALLBACK_INFO_ROW,
-    BG_LOOP_INFO_ROW
+    // BLANK_ROW_0,
+    // HEX_INFO_ROW,
+    // BLANK_ROW_1,
+    // FLOAT_INFO_ROW,
+    // DEC_INFO,
+    // CALLBACK_INFO_ROW,
+    // BG_LOOP_INFO_ROW
 };
 
 namespace LFAST
@@ -48,26 +48,23 @@ namespace LFAST
    
 };
 
-/// @brief Rename the DeviceController class when creating a new controller from this template.
-class DeviceController : public LFAST_Device
+/// @brief Rename the VoiceCoilInterfaceController class when creating a new controller from this template.
+class VoiceCoilInterfaceController : public LFAST_Device
 {
 public:
-    static DeviceController &getDeviceController();
+    static VoiceCoilInterfaceController &getDeviceController();
 
-    virtual ~DeviceController() {}
+    virtual ~VoiceCoilInterfaceController() {}
     void setupPersistentFields() override;
 
     void hardware_setup();
     void enableControlInterrupt();
-    void setMoveNotifierFlag(volatile bool *flagPtr);
-    void setHomingCompleteNotifierFlag(volatile bool *flagPtr);
-    bool checkForNewCommand();
     void doInterruptStuff();
     void doNonInterruptStuff();
 
     void doSomethingForACallback();
 private:
-    DeviceController(){};
+    VoiceCoilInterfaceController(){};
 
 };
 

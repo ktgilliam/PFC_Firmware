@@ -1,2 +1,2 @@
-# LFAST_Device_Template
+# Prime Focus Corrector Firmware
 (Readme is in work)

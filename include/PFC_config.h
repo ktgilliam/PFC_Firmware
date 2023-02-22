@@ -23,6 +23,17 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #define LED_PIN 13
 
+// Laser diode controller pins
+#define LASER_DIODE_PINS {10, 11, 12, 13}
+
+// ADC Motor Pins
+#define ADC_POSN_WIPER_PIN A0
+#define ADC_MTR_POS_PIN 24
+#define ADC_MTR_NEG_PIN 22
+
+// Voicecoil controller interface pins (Serial 4)
+#define VC_CTRL_IFACE_TX_PIN 17
+#define VC_CTRL_IFACE_RX_PIN 16
 
 //Determine Network values
 #define MAC { 0x00, 0x50, 0xB6, 0xEA, 0x8F, 0x44 }
