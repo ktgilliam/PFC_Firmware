@@ -35,15 +35,15 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include <TerminalInterface.h>
 #include <teensy41_device.h>
 
-#include "device_config.h"
-#include "device_controller.h"
+#include "PFC_config.h"
+#include "adc_controller.h"
 
 /// @brief Pointers to the two LFAST_Device objects being used here
 LFAST::TcpCommsService *commsService;
 TerminalInterface *cli;
 
 /// @brief Pointer to the controller which is specific to this application.
-DeviceController *pDC;
+ADCController *pDC;
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -76,10 +76,10 @@ void setup()
   // Initialization function so that any error messages can be printed out.
   commsService->initializeEnetIface(PORT);
 
-  // The DeviceController class is a singleton, (meaning only one can exist), so 
+  // The PFCController class is a singleton, (meaning only one can exist), so 
   // instead of creating one with the new keyword, we use its getDeviceController
   // function.
-  DeviceController &dc = DeviceController::getDeviceController();
+  ADCController &dc = ADCController::getDeviceController();
   pDC = &dc;
   pDC->connectTerminalInterface(cli, "Device");
 
@@ -151,7 +151,7 @@ void handshake(unsigned int val)
     newMsg.addKeyValuePair<unsigned int>("Handshake", 0xBEEF);
     commsService->sendMessage(newMsg, LFAST::CommsService::ACTIVE_CONNECTION);
     cli->printDebugMessage("Connected to client, starting control ISR.");
-    pDC->enableControlInterrupt();
+    // pDC->enableControlInterrupt();
   }
   return;
 }

@@ -18,7 +18,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 /// @file device_controller.cpp
 ///
 
-#include "device_controller.h"
+#include "voicecoil_iface_controller.h"
 #include <Arduino.h>
 #include <cstring>
 #include <cmath>
@@ -26,7 +26,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include <iostream>
 #include <TerminalInterface.h>
 #include <math_util.h>
-#include "device_config.h"
+#include "PFC_config.h"
 #include "teensy41_device.h"
 #include "TimerOne.h"
 
@@ -41,14 +41,14 @@ using namespace LFAST;
 /// class. It should use getDeviceController() which will return a reference to the same
 /// object as is used in the main.cpp code, since the device controller is a singleton.
 ///
-void primaryMirrorControl_ISR()
-{
-    noInterrupts();
+// void primaryMirrorControl_ISR()
+// {
+//     noInterrupts();
 
-    DeviceController &dc = DeviceController::getDeviceController();
-    dc.doInterruptStuff();
-    interrupts();
-}
+//     VoiceCoilInterfaceController &dc = VoiceCoilInterfaceController::getDeviceController();
+//     dc.doInterruptStuff();
+//     interrupts();
+// }
 
 /// @brief Returns a reference to the singleton instantiation of this class
 ///
@@ -58,28 +58,28 @@ void primaryMirrorControl_ISR()
 /// reference to that object is returned.
 ///
 /// @return A reference to the singleton instantiation of this class
-DeviceController &DeviceController::getDeviceController()
+VoiceCoilInterfaceController &VoiceCoilInterfaceController::getDeviceController()
 {
-    static DeviceController instance;
+    static VoiceCoilInterfaceController instance;
     return instance;
 }
 
 /// @brief Any code which leverages hardware on the Teensy (such as timers, interrupts, etc)
-void DeviceController::hardware_setup()
+void VoiceCoilInterfaceController::hardware_setup()
 {
     // Initialize Timer
-    Timer1.initialize(UPDATE_PRD_US);
-    Timer1.stop();
-    Timer1.attachInterrupt(primaryMirrorControl_ISR);
+    // Timer1.initialize(UPDATE_PRD_US);
+    // Timer1.stop();
+    // Timer1.attachInterrupt(primaryMirrorControl_ISR);
 }
 
-void DeviceController::enableControlInterrupt()
+void VoiceCoilInterfaceController::enableControlInterrupt()
 {
     Timer1.start();
 }
 
 /// @brief Stuff that happens inside the interrupt part of the device controller code.
-void DeviceController::doInterruptStuff()
+void VoiceCoilInterfaceController::doInterruptStuff()
 {
     static uint32_t info_1_demo_val = 0;
     static double info_2_demo_val = 0;
@@ -90,35 +90,35 @@ void DeviceController::doInterruptStuff()
     info_3_demo_val -= 3;
 
 #if ENABLE_TERMINAL_UPDATES
-    cli->updatePersistentField(DeviceName, HEX_INFO_ROW, info_1_demo_val, "%#08x");
-    cli->updatePersistentField(DeviceName, HEX_INFO_ROW, info_2_demo_val, "%0.4f");
-    cli->updatePersistentField(DeviceName, HEX_INFO_ROW, info_3_demo_val, "%d");
+    // cli->updatePersistentField(DeviceName, HEX_INFO_ROW, info_1_demo_val, "%#08x");
+    // cli->updatePersistentField(DeviceName, HEX_INFO_ROW, info_2_demo_val, "%0.4f");
+    // cli->updatePersistentField(DeviceName, HEX_INFO_ROW, info_3_demo_val, "%d");
 #endif
 }
 
 /// @brief Stuff that happens outside the interrupt part of the device controller code.
-void DeviceController::doNonInterruptStuff()
+void VoiceCoilInterfaceController::doNonInterruptStuff()
 {
     static uint64_t bg_loop_ct = 0;
-    cli->updatePersistentField(DeviceName, BG_LOOP_INFO_ROW, bg_loop_ct++, "%d");
+    // cli->updatePersistentField(DeviceName, BG_LOOP_INFO_ROW, bg_loop_ct++, "%d");
 }
 
 /// @brief Creates persistent field labels for the terminal interface.
-void DeviceController::setupPersistentFields()
+void VoiceCoilInterfaceController::setupPersistentFields()
 {
     if (cli == nullptr)
         return;
 
-    cli->addPersistentField(DeviceName, "[Hex Info (interrupt)]", HEX_INFO_ROW);
-    cli->addPersistentField(DeviceName, "[Float Info (interrupt)]", FLOAT_INFO_ROW);
-    cli->addPersistentField(DeviceName, "[Dec Info (interrupt)]", DEC_INFO);
-    cli->addPersistentField(DeviceName, "[Callback Counter]", CALLBACK_INFO_ROW);
-    cli->addPersistentField(DeviceName, "[BG Loop Counter]", BG_LOOP_INFO_ROW);
+    // cli->addPersistentField(DeviceName, "[Hex Info (interrupt)]", HEX_INFO_ROW);
+    // cli->addPersistentField(DeviceName, "[Float Info (interrupt)]", FLOAT_INFO_ROW);
+    // cli->addPersistentField(DeviceName, "[Dec Info (interrupt)]", DEC_INFO);
+    // cli->addPersistentField(DeviceName, "[Callback Counter]", CALLBACK_INFO_ROW);
+    // cli->addPersistentField(DeviceName, "[BG Loop Counter]", BG_LOOP_INFO_ROW);
 }
 
 /// @brief Function to be called when a callback is received over TCP.
-void DeviceController::doSomethingForACallback()
+void VoiceCoilInterfaceController::doSomethingForACallback()
 {
     static uint64_t callback_ct = 0;
-    cli->updatePersistentField(DeviceName, CALLBACK_INFO_ROW, callback_ct++, "%d");
+    // cli->updatePersistentField(DeviceName, CALLBACK_INFO_ROW, callback_ct++, "%d");
 }
