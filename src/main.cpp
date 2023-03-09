@@ -37,14 +37,17 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "PFC_config.h"
 #include "adc_controller.h"
+#include "laser_array_controller.h"
+#include "voicecoil_iface_controller.h"
 
 /// @brief Pointers to the two LFAST_Device objects being used here
 LFAST::TcpCommsService *commsService;
 TerminalInterface *cli;
 
 /// @brief Pointer to the controller which is specific to this application.
-ADCController *pDC;
-
+ADCController *pADC;
+LaserArrayController *pLAC;
+VoiceCoilInterfaceController *pVCI;
 
 ///////////////////////////////////////////////////////////////////////////
 /// The LFAST Comms library (of which TcpCommsService is a component)
@@ -55,6 +58,9 @@ ADCController *pDC;
 /// This template defines and registers two such callbacks in this file.
 ///////////////////////////////////////////////////////////////////////////
 void handshake(unsigned int val);
+void setLaserState(unsigned int onOff);
+void setAdcPosition(double setPosition);
+void getAdcPosition(bool ignore);
 void otherCallback(double some_value);
 
 /// @brief variables for the TCP configuration
@@ -76,12 +82,17 @@ void setup()
   // Initialization function so that any error messages can be printed out.
   commsService->initializeEnetIface(PORT);
 
-  // The PFCController class is a singleton, (meaning only one can exist), so 
-  // instead of creating one with the new keyword, we use its getDeviceController
-  // function.
-  ADCController &dc = ADCController::getDeviceController();
-  pDC = &dc;
-  pDC->connectTerminalInterface(cli, "Device");
+  ADCController &adc = ADCController::getAdcController();
+  pADC = &adc;
+  pADC->connectTerminalInterface(cli, "ADC");
+
+  LaserArrayController &lac = LaserArrayController::getLaserController();
+  pLAC = &lac;
+  pLAC->connectTerminalInterface(cli, "LAC");
+
+  VoiceCoilInterfaceController &vci = VoiceCoilInterfaceController::getVoiceCoilController();
+  pVCI = &vci;
+  pADC->connectTerminalInterface(cli, "Device");
 
   // The terminal's persistent fields are set up to print out values which update 
   // frequently to the same position in the console window, rather than printing out
@@ -138,7 +149,7 @@ void loop()
   commsService->stopDisconnectedClients();
 
   // Loop code for updating the controller device
-  pDC->doNonInterruptStuff();
+  pADC->doNonInterruptStuff();
 }
 
 /// @brief Handshake function to confirm connection
@@ -156,13 +167,43 @@ void handshake(unsigned int val)
   return;
 }
 
+
+/// @brief  Turns the lasers on and off
+/// @param onOff 1=On, 0=Off
+void setLaserState(unsigned int onOff)
+{
+  // Disable interrupts if this callback uses shared data
+  noInterrupts();
+  pLAC->setLasterState(onOff);
+  // Re-enable Interrupts
+  interrupts();
+}
+
+/// @brief  An example of another callback function with a different value type
+/// @param some_value 
+void setAdcPosition(double setPosition)
+{
+  // Disable interrupts if this callback uses shared data
+  noInterrupts();
+  pADC->setPosition(setPosition);
+  // Re-enable Interrupts
+  interrupts();
+}
+/// @brief  An example of another callback function with a different value type
+/// @param some_value 
+void getAdcPosition(bool ignore)
+{
+  // Disable interrupts if this callback uses shared data
+  double posn = pADC->getCurrentPosition();
+
+}
+
 /// @brief  An example of another callback function with a different value type
 /// @param some_value 
 void otherCallback(double some_value)
 {
   // Disable interrupts if this callback uses shared data
   noInterrupts();
-  pDC->doSomethingForACallback();
   // Re-enable Interrupts
   interrupts();
 }

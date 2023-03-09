@@ -43,7 +43,7 @@ using namespace LFAST;
 /// reference to that object is returned.
 ///
 /// @return A reference to the singleton instantiation of this class
-ADCController &ADCController::getDeviceController()
+ADCController &ADCController::getAdcController()
 {
     static ADCController instance;
     return instance;
@@ -52,10 +52,8 @@ ADCController &ADCController::getDeviceController()
 /// @brief Any code which leverages hardware on the Teensy (such as timers, interrupts, etc)
 void ADCController::hardware_setup()
 {
-    // Initialize Timer
-    // Timer1.initialize(UPDATE_PRD_US);
-    // Timer1.stop();
-    // Timer1.attachInterrupt(primaryMirrorControl_ISR);
+ pinMode(ADC_MTR_POS_PIN, OUTPUT);
+ pinMode(ADC_MTR_NEG_PIN, OUTPUT);
 }
 
 /// @brief Stuff that happens outside the interrupt part of the device controller code.
@@ -79,8 +77,15 @@ void ADCController::setupPersistentFields()
 }
 
 /// @brief Function to be called when a callback is received over TCP.
-void ADCController::doSomethingForACallback()
+void ADCController::setPosition(double position)
 {
-    static uint64_t callback_ct = 0;
+    //  double posn = getCurrentPosition();
+    targetPosition = position;
     // cli->updatePersistentField(DeviceName, CALLBACK_INFO_ROW, callback_ct++, "%d");
+}
+
+double ADCController::getCurrentPosition()
+{
+    double posn = analogRead(ADC_POSN_WIPER_PIN) * ADC_POSN_WIPER_SCALE;
+    return posn;
 }

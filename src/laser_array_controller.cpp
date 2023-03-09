@@ -30,10 +30,21 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "teensy41_device.h"
 #include "TimerOne.h"
 
+const unsigned int laserDiodePins[] = LASER_DIODE_PINS;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////// Control Functions  //////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 using namespace LFAST;
+
+/// @brief Any code which leverages hardware on the Teensy (such as timers, interrupts, etc)
+void LaserArrayController::hardware_setup()
+{
+    for(int ii = 0; ii < sizeof(laserDiodePins)/sizeof(unsigned int); ii++)
+    {
+        pinMode(laserDiodePins[ii], OUTPUT);
+        digitalWrite(laserDiodePins[ii], LOW);
+    }
+}
 
 /// @brief Returns a reference to the singleton instantiation of this class
 ///
@@ -43,23 +54,10 @@ using namespace LFAST;
 /// reference to that object is returned.
 ///
 /// @return A reference to the singleton instantiation of this class
-LaserArrayController &LaserArrayController::getDeviceController()
+LaserArrayController &LaserArrayController::getLaserController()
 {
     static LaserArrayController instance;
     return instance;
-}
-
-/// @brief Any code which leverages hardware on the Teensy (such as timers, interrupts, etc)
-void LaserArrayController::hardware_setup()
-{
-
-}
-
-/// @brief Stuff that happens outside the interrupt part of the device controller code.
-void LaserArrayController::doNonInterruptStuff()
-{
-    static uint64_t bg_loop_ct = 0;
-    // cli->updatePersistentField(DeviceName, BG_LOOP_INFO_ROW, bg_loop_ct++, "%d");
 }
 
 /// @brief Creates persistent field labels for the terminal interface.
@@ -68,16 +66,15 @@ void LaserArrayController::setupPersistentFields()
     if (cli == nullptr)
         return;
 
-    // cli->addPersistentField(DeviceName, "[Hex Info (interrupt)]", HEX_INFO_ROW);
-    // cli->addPersistentField(DeviceName, "[Float Info (interrupt)]", FLOAT_INFO_ROW);
-    // cli->addPersistentField(DeviceName, "[Dec Info (interrupt)]", DEC_INFO);
-    // cli->addPersistentField(DeviceName, "[Callback Counter]", CALLBACK_INFO_ROW);
-    // cli->addPersistentField(DeviceName, "[BG Loop Counter]", BG_LOOP_INFO_ROW);
+    cli->addPersistentField(DeviceName, "[Hex Info (interrupt)]", DIODE_STATE_ROW);
 }
 
 /// @brief Function to be called when a callback is received over TCP.
-void LaserArrayController::doSomethingForACallback()
+void LaserArrayController::setLasterState(unsigned int onOff)
 {
-    static uint64_t callback_ct = 0;
-    // cli->updatePersistentField(DeviceName, CALLBACK_INFO_ROW, callback_ct++, "%d");
+    for(int ii = 0; ii < sizeof(laserDiodePins)/sizeof(unsigned int); ii++)
+    {
+        digitalWrite(laserDiodePins[ii], onOff);
+    }
+    cli->updatePersistentField(DeviceName, DIODE_STATE_ROW, onOff, "%d");
 }

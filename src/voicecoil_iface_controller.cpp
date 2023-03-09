@@ -58,7 +58,7 @@ using namespace LFAST;
 /// reference to that object is returned.
 ///
 /// @return A reference to the singleton instantiation of this class
-VoiceCoilInterfaceController &VoiceCoilInterfaceController::getDeviceController()
+VoiceCoilInterfaceController &VoiceCoilInterfaceController::getVoiceCoilController()
 {
     static VoiceCoilInterfaceController instance;
     return instance;

@@ -27,9 +27,10 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #define LASER_DIODE_PINS {10, 11, 12, 13}
 
 // ADC Motor Pins
-#define ADC_POSN_WIPER_PIN A0
 #define ADC_MTR_POS_PIN 24
 #define ADC_MTR_NEG_PIN 22
+#define ADC_POSN_WIPER_PIN A0
+#define ADC_POSN_WIPER_SCALE 1.0 // need to work this out and update
 
 // Voicecoil controller interface pins (Serial 4)
 #define VC_CTRL_IFACE_TX_PIN 17

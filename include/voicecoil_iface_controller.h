@@ -19,8 +19,8 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 ///
 
 
-#ifndef DEVICE_CONTROLLER_H
-#define DEVICE_CONTROLLER_H
+#ifndef VOICE_COIL_CONTROLLER_H
+#define VOICE_COIL_CONTROLLER_H
 
 #include <Arduino.h>
 #include <LFAST_Device.h>
@@ -52,7 +52,7 @@ namespace LFAST
 class VoiceCoilInterfaceController : public LFAST_Device
 {
 public:
-    static VoiceCoilInterfaceController &getDeviceController();
+    static VoiceCoilInterfaceController &getVoiceCoilController();
 
     virtual ~VoiceCoilInterfaceController() {}
     void setupPersistentFields() override;

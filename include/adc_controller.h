@@ -19,8 +19,8 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 ///
 
 
-#ifndef DEVICE_CONTROLLER_H
-#define DEVICE_CONTROLLER_H
+#ifndef ADC_CONTROLLER_H
+#define ADC_CONTROLLER_H
 
 #include <Arduino.h>
 #include <LFAST_Device.h>
@@ -52,7 +52,7 @@ namespace LFAST
 class ADCController : public LFAST_Device
 {
 public:
-    static ADCController &getDeviceController();
+    static ADCController &getAdcController();
 
     virtual ~ADCController() {}
     void setupPersistentFields() override;
@@ -60,8 +60,11 @@ public:
     void hardware_setup();
     void doNonInterruptStuff();
 
-    void doSomethingForACallback();
+    void setPosition(double position);
+    double getCurrentPosition();
+
 private:
+    double targetPosition;
     ADCController(){};
 
 };

@@ -19,8 +19,8 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 ///
 
 
-#ifndef DEVICE_CONTROLLER_H
-#define DEVICE_CONTROLLER_H
+#ifndef LASER_ARRAY_CONTROLLER_H
+#define LASER_ARRAY_CONTROLLER_H
 
 #include <Arduino.h>
 #include <LFAST_Device.h>
@@ -29,18 +29,14 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include <algorithm>
 
 #include <math_util.h>
+
+#include "lfast_device.h"
 #include "teensy41_device.h"
 
 /// @brief  Use an enum to make it easy to switch the order that persistent fields are printed out.
 enum LASER_CTRL_CLI_ROWS
 {
-    // BLANK_ROW_0,
-    // HEX_INFO_ROW,
-    // BLANK_ROW_1,
-    // FLOAT_INFO_ROW,
-    // DEC_INFO,
-    // CALLBACK_INFO_ROW,
-    // BG_LOOP_INFO_ROW
+    DIODE_STATE_ROW,
 };
 
 namespace LFAST
@@ -52,17 +48,17 @@ namespace LFAST
 class LaserArrayController : public LFAST_Device
 {
 public:
-    static LaserArrayController &getDeviceController();
-
+    static LaserArrayController &getLaserController();
     virtual ~LaserArrayController() {}
     void setupPersistentFields() override;
 
     void hardware_setup();
     void doNonInterruptStuff();
 
-    void doSomethingForACallback();
+    void setLasterState(unsigned int onOff);
+
 private:
-    LaserArrayController(){};
+    LaserArrayController() : LFAST_Device() {};
 
 };
 
